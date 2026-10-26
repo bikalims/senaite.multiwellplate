@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object name="WorksheetTemplate" meta_type="Dexterity FTI">
+  <property name="schema">senaite.core.content.worksheettemplate.IWorksheetTemplateSchema</property>
+</object>
