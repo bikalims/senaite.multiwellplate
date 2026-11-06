@@ -24,7 +24,7 @@
         return analysis.getRequest().getId()
 
     def get_plate_obj(worksheet):
-        return IMultiWellPlateBehavior(worksheet)
+        return IMultiWellPlateBehavior(worksheet, None)
 
     def get_idx_well_dict(pairs):
         result = {}
@@ -46,9 +46,9 @@
               template        python:worksheet['obj'].getWorksheetTemplate();
               laboratory      worksheet/laboratory;
               plate           python:get_plate(worksheet['obj']);
-              rows            python:plate.getRowsCount();
-              cols            python:plate.getColsCount();
-              idxes           python:get_idx_dict(plate.getMultiWellPlate())">
+              rows            python:plate.getRowsCount() if plate is not None else 0;
+              cols            python:plate.getColsCount() if plate is not None else 0;
+              idxes           python:get_idx_dict(plate.getMultiWellPlate()) if plate is not None else {}">
 
   <div id="header">
     <div class='barcode-container'>
@@ -87,11 +87,11 @@
       <a tal:attributes="href python:('mailto:%s' % worksheet['printedby']['email'])"
          tal:content="worksheet/printedby/fullname"></a>
     </div>
-    <div>
+    <div tal:condition="python:plate is not None">
       <span i18n:translate="">Plate dimensions</span>:&nbsp;
       <span tal:content="string: $rows x $cols"></span>
       <span i18n:translate="">Plate template</span>:&nbsp;
-      <span tal:content="python: template.Title()"></span>
+      <span tal:content="python: template.Title() if template is not None else ''"></span>
     </div>
     <div>
       <span i18n:translate="">Plated by</span>:&nbsp;
@@ -101,7 +101,10 @@
   </div>
 
   <!-- MultiWell Plate -->
-  <div class="content">
+  <p tal:condition="python:plate is None" i18n:translate="">
+    This worksheet is not configured as a multiwell plate. Please select another print template.
+  </p>
+  <div class="content" tal:condition="python:plate is not None">
     <table class="plate_table" tal:attributes="style string:--rows: $rows;; --cols: $cols;;">
      <tr tal:repeat="row python:range(rows+1)">
         <td class="plate_table__cell"
