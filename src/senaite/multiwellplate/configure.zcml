@@ -52,10 +52,10 @@
     />
 
     <!-- Configure printed templates for Worksheets  -->
-    <plone:static
-        directory="worksheets"
-        type="worksheets"
-        name="MWP print templates"
+    <utility
+        factory=".printresources.WorksheetPrintResources"
+        provides="plone.resource.interfaces.IResourceDirectory"
+        name="++worksheets++MWP print templates"
     />
 
 </configure>
